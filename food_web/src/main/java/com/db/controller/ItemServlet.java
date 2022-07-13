@@ -2,6 +2,7 @@ package com.db.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,15 +10,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.db.utils.ItemDao;
+import com.db.utils.ItemDAO;
+
+
 import demo.Items;
+
+
+
 @WebServlet("/")
 public class ItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private ItemDao ItemDao;   
+    private ItemDAO itemDAO;   
     
 	public void init() {
-		ItemDao = new ItemDao();
+		itemDAO = new ItemDAO();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +61,7 @@ public class ItemServlet extends HttpServlet {
 	}
 	private void listItem(HttpServletRequest request, HttpServletResponse response)
 		    throws SQLException, IOException, ServletException {
-		        List < Items > listItem =ItemDao.select_All_Items() ;
+		        List < Items > listItem =itemDAO.selectAllItems() ;
 		        request.setAttribute("listItem", listItem);
 		        RequestDispatcher dispatcher = request.getRequestDispatcher("item-list.jsp");
 		        dispatcher.forward(request, response);
@@ -70,7 +76,7 @@ public class ItemServlet extends HttpServlet {
 		    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
 		    throws SQLException, ServletException, IOException {
 		        int id = Integer.parseInt(request.getParameter("id"));
-		        Items existingItem =ItemDao.selectItem(id);
+		        Items existingItem =itemDAO.selectItem(id);
 		        RequestDispatcher dispatcher = request.getRequestDispatcher("item-form.jsp");
 		        request.setAttribute("item", existingItem);
 		        dispatcher.forward(request, response);
@@ -83,7 +89,7 @@ public class ItemServlet extends HttpServlet {
 		        String name = request.getParameter("name");
 		        int rupee=Integer.parseInt(request.getParameter("rupee"));
 		        Items newItem = new Items(id,name, rupee);
-		        ItemDao.insertItem(newItem);
+		        itemDAO.insertItem(newItem);
 		        response.sendRedirect("list");
 		    }
 
@@ -94,14 +100,14 @@ public class ItemServlet extends HttpServlet {
 		        int rupee = Integer.parseInt(request.getParameter("rupee"));
 
 		        Items book = new Items(id, name, rupee);
-		        ItemDao.updateItem(book);
+		        itemDAO.updateItem(book);
 		        response.sendRedirect("list");
 		    }
 
 		    private void deleteItem(HttpServletRequest request, HttpServletResponse response)
 		    throws SQLException, IOException {
 		        int id = Integer.parseInt(request.getParameter("id"));
-		        ItemDao.deleteItem(id);
+		        itemDAO.deleteItem(id);
 		        response.sendRedirect("list");
 
 		    }

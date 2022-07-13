@@ -1,4 +1,5 @@
 package com.db.utils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import demo.Items;
-public class ItemDao {
+public class ItemDAO {
 	private static final String INSERT_ITEMS_SQL = "INSERT INTO items VALUES(?, ?, ?)";
 	private static final String SELECT_ITEMS_BY_ID = "select id,item_name,price_rupee from items where id =?";
     private static final String SELECT_ALL_ITEMS = "select * from items";
@@ -27,16 +28,15 @@ public class ItemDao {
     
     public Items selectItem(int id) {
     	Items item = null;
-        // Step 1: Establishing a Connection
+        
         try (Connection connection = DbConnection.init();
-            // Step 2:Create a statement using connection object
+            
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ITEMS_BY_ID);) {
             preparedStatement.setInt(1, id);
             System.out.println(preparedStatement);
-            // Step 3: Execute the query or update query
+            
             ResultSet rs = preparedStatement.executeQuery();
 
-            // Step 4: Process the ResultSet object.
             while (rs.next()) {
                 String name = rs.getString("item_name");
                 int rupee = rs.getInt("price_rupee");
@@ -48,13 +48,15 @@ public class ItemDao {
         return item;
     }
     
-    public List < Items > select_All_Items() {
+    public List < Items > selectAllItems() {
 
         // using try-with-resources to avoid closing resources (boiler plate code)
         List < Items > items = new ArrayList < > ();
         // Step 1: Establishing a Connection
         try (Connection connection = DbConnection.init();
-        		PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_ITEMS);) {
+
+            // Step 2:Create a statement using connection object
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_ITEMS);) {
             // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -109,4 +111,3 @@ public class ItemDao {
 
 
 }
-
